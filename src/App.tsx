@@ -20,6 +20,7 @@ import { ProtesiCatalogView } from './components/views/ProtesiCatalogView';
 import { CoursePreStartCountdown } from './components/CoursePreStartCountdown';
 import { ModuleCalloutBanner } from './components/ModuleCalloutBanner';
 import { SimulationQuickFloatingBar } from './components/SimulationQuickFloatingBar';
+import { StartupAccessModal } from './components/StartupAccessModal';
 import { Activity, ShieldCheck, HeartPulse } from 'lucide-react';
 
 const CourseMainContent: React.FC = () => {
@@ -40,6 +41,26 @@ const CourseMainContent: React.FC = () => {
     setIsSimulationModalOpen,
   } = useCourse();
   const [currentTab, setCurrentTab] = useState<string>('main');
+
+  const [isStartupModalOpen, setIsStartupModalOpen] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    const params = new URLSearchParams(window.location.search);
+    const hasParams =
+      params.has('discente') ||
+      params.has('faculty') ||
+      params.has('tecnico') ||
+      params.has('technician') ||
+      params.has('direttore') ||
+      params.has('director') ||
+      params.has('ospite') ||
+      params.has('guest') ||
+      params.has('badge') ||
+      params.has('role') ||
+      params.has('id');
+    if (hasParams) return false;
+    const dismissed = sessionStorage.getItem('trauma_startup_gateway_done');
+    return !dismissed;
+  });
 
   // Check URL parameters for instant unique QR Code direct navigation (?discente=... , ?faculty=... , ?tecnico=... , ?direttore=... , ?ospite=...)
   useEffect(() => {
@@ -226,6 +247,21 @@ const CourseMainContent: React.FC = () => {
           </div>
         </div>
       </footer>
+
+      {/* Startup Access Gateway Modal */}
+      <StartupAccessModal
+        isOpen={isStartupModalOpen}
+        onSelectPublic={() => {
+          setUserRole('public');
+          sessionStorage.setItem('trauma_startup_gateway_done', 'true');
+          setIsStartupModalOpen(false);
+        }}
+        onSelectDirector={() => {
+          setUserRole('direttore');
+          sessionStorage.setItem('trauma_startup_gateway_done', 'true');
+          setIsStartupModalOpen(false);
+        }}
+      />
     </div>
   );
 };
