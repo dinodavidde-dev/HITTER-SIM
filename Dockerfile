@@ -38,4 +38,4 @@ ENV NODE_ENV=production
 ENV PORT=3000
 
 # Start the server
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["node", "server.js"]
