@@ -42,6 +42,7 @@ import { SyncStatusModal } from './SyncStatusModal';
 import { FacultyAuthModal } from './FacultyAuthModal';
 import { CourseMessengerModal } from './messaging/CourseMessengerModal';
 import { SimulationEngineModal } from './SimulationEngineModal';
+import { EmailAccessModal } from './EmailAccessModal';
 import { LanguageSwitcher } from './LanguageSwitcher';
 
 interface NavbarProps {
@@ -83,6 +84,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab }) => 
   const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
   const [isFacultyAuthModalOpen, setIsFacultyAuthModalOpen] = useState(false);
   const [isMessengerOpen, setIsMessengerOpen] = useState(false);
+  const [isEmailAccessModalOpen, setIsEmailAccessModalOpen] = useState(false);
   const [pendingRole, setPendingRole] = useState<UserRole | null>(null);
 
   const topScrollRef = useRef<HTMLDivElement>(null);
@@ -328,6 +330,17 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab }) => 
               >
                 <QrCode className="w-3 h-3 text-cyan-400" />
                 <span>QR PASS</span>
+              </button>
+
+              {/* BLOCK 4.1: First Access Email Login Button */}
+              <button
+                id="open-email-access-btn"
+                onClick={() => setIsEmailAccessModalOpen(true)}
+                className="flex items-center gap-1 px-2.5 py-1 bg-orange-600 hover:bg-orange-500 text-black font-black text-[11px] uppercase tracking-wider rounded border border-orange-400 transition-all cursor-pointer shadow-xs flex-shrink-0"
+                title={language === 'en' ? 'First Access / Login with Email' : 'Primo Accesso / Login con Email'}
+              >
+                <KeyRound className="w-3 h-3 text-black" />
+                <span>{language === 'en' ? 'EMAIL LOGIN' : 'ACCESSO EMAIL'}</span>
               </button>
 
               {/* BLOCK 4B: Quick Messenger Button */}
@@ -698,6 +711,12 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab }) => 
       <SimulationEngineModal
         isOpen={isSimulationModalOpen}
         onClose={() => setIsSimulationModalOpen(false)}
+      />
+
+      {/* First Access Email Login / Verification Modal */}
+      <EmailAccessModal
+        isOpen={isEmailAccessModalOpen}
+        onClose={() => setIsEmailAccessModalOpen(false)}
       />
     </>
   );

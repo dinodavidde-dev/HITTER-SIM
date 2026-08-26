@@ -28,13 +28,13 @@ RUN npm install --production
 COPY --from=builder /app/dist ./dist
 
 # Copy production Express server
-COPY server.js ./
+COPY server.cjs ./
 
-# Expose port 3000
-EXPOSE 3000
+# Expose port 8080
+EXPOSE 8080
 
 # Set environment to production
 ENV NODE_ENV=production
 
 # Start the server
-CMD ["node", "server.js"]
+CMD ["node", "server.cjs"]

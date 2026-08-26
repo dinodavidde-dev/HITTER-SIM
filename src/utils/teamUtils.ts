@@ -81,3 +81,34 @@ export function cleanUndefined<T>(obj: T): T {
   ) as unknown as T;
 }
 
+/**
+ * Checks if a participant's anagrafica is fully complete (name, valid email, and category-specific fields).
+ */
+export function isPersonComplete(person: any, category: 'discente' | 'faculty' | 'tecnico' | 'direttore' | 'ospite'): boolean {
+  if (!person || !person.name || typeof person.name !== 'string' || person.name.trim() === '') {
+    return false;
+  }
+  if (!person.email || typeof person.email !== 'string' || person.email.trim() === '') {
+    return false;
+  }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(person.email.trim())) {
+    return false;
+  }
+
+  switch (category) {
+    case 'discente':
+      return Boolean(person.role && person.teamId);
+    case 'faculty':
+      return Boolean(person.assignedTeamId !== undefined);
+    case 'tecnico':
+      return Boolean(person.assignedStations && Array.isArray(person.assignedStations) && person.assignedStations.length > 0);
+    case 'direttore':
+      return Boolean(person.title);
+    case 'ospite':
+      return Boolean(person.organization && person.assignedDays && Array.isArray(person.assignedDays) && person.assignedDays.length > 0);
+    default:
+      return true;
+  }
+}
+
