@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useCourse } from '../../context/CourseContext';
+import { motion } from 'motion/react';
 import {
   Activity,
   AlertCircle,
@@ -444,7 +445,24 @@ export const DiscenteView: React.FC = () => {
       {activeSubTab === 'agenda' && (
         <div className="space-y-6">
           {/* LIVE NOW CARD - WHAT MY TEAM SHOULD DO RIGHT NOW */}
-          <div className="bg-neutral-950 border-4 border-orange-500 p-5 sm:p-6 shadow-2xl relative">
+          <motion.div
+            key={`${activeSlotIndex}-${currentTeam.id}`}
+            initial={{ opacity: 0, scale: 0.98, y: 12 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="bg-neutral-950 border-4 border-orange-500 p-5 sm:p-6 shadow-2xl relative overflow-hidden"
+          >
+            {/* Rotation Status Update Feedback Banner */}
+            <div className="mb-3 px-3 py-1.5 bg-orange-500/20 border border-orange-500 flex items-center justify-between text-xs font-mono text-orange-300">
+              <span className="flex items-center gap-1.5 font-bold uppercase tracking-wider">
+                <Sparkles className="w-3.5 h-3.5 text-orange-400 animate-spin" />
+                {isEn ? 'Rotation Status Updated • Active Assignment Synced' : 'Stato Rotazione Aggiornato • Assegnazione Attiva Sincronizzata'}
+              </span>
+              <span className="text-[10px] bg-orange-500 text-black px-1.5 py-0.5 font-black uppercase tracking-widest">
+                LIVE
+              </span>
+            </div>
+
             <div className="flex items-center justify-between gap-4 pb-3 border-b-2 border-neutral-800">
               <div className="flex items-center gap-2.5">
                 <span className="w-3 h-3 bg-red-600 rounded-full animate-pulse" />
@@ -732,7 +750,7 @@ export const DiscenteView: React.FC = () => {
                 {isEn ? 'No activities scheduled for your group in this slot.' : 'Nessuna attività programmata per il tuo gruppo in questo slot.'}
               </div>
             )}
-          </div>
+          </motion.div>
 
           {/* TWO-DAY FULL TIMELINE ACCORDION FOR MY TEAM */}
           <div className="space-y-4">

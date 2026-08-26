@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShieldAlert, KeyRound, Users, Lock, Unlock, ArrowRight, AlertTriangle, Activity, CheckCircle2 } from 'lucide-react';
+import { ShieldAlert, KeyRound, Users, Lock, Unlock, ArrowRight, AlertTriangle, Activity, CheckCircle2, Globe } from 'lucide-react';
 import { useCourse } from '../context/CourseContext';
 
 interface StartupAccessModalProps {
@@ -13,7 +13,7 @@ export const StartupAccessModal: React.FC<StartupAccessModalProps> = ({
   onSelectPublic,
   onSelectDirector,
 }) => {
-  const { language } = useCourse();
+  const { language, setLanguage } = useCourse();
   const isEn = language === 'en';
 
   const [mode, setMode] = useState<'choice' | 'director_auth'>('choice');
@@ -29,7 +29,7 @@ export const StartupAccessModal: React.FC<StartupAccessModalProps> = ({
     const cleanCode = code118.trim();
 
     if (cleanCode === '118') {
-      setSuccessMsg(isEn ? 'Access Granted. Entering Director Console...' : 'Accesso Consentito. Apertura Console Direttore...');
+      setSuccessMsg(isEn ? 'Access Granted. Entering Staff & Professionals Console...' : 'Accesso Consentito. Apertura Console Addetti ai Lavori...');
       setTimeout(() => {
         onSelectDirector();
       }, 800);
@@ -46,30 +46,43 @@ export const StartupAccessModal: React.FC<StartupAccessModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fadeIn">
       <div className="bg-neutral-900 border-2 border-orange-500/80 max-w-lg w-full p-6 sm:p-8 shadow-2xl relative text-neutral-100">
         
-        {/* Header Header */}
-        <div className="flex items-center gap-3.5 mb-6 pb-4 border-b border-neutral-800">
-          <div className="w-12 h-12 bg-orange-500/20 border-2 border-orange-500 flex items-center justify-center text-orange-400 font-bold shadow-inner">
-            <Activity className="w-7 h-7 animate-pulse" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 bg-red-600 text-white font-mono text-[10px] uppercase font-black tracking-wider">
-                {isEn ? 'SECURE GATEWAY' : 'ACCESSO PROTETTO'}
-              </span>
-              <span className="text-neutral-400 font-mono text-xs">TRAUMA SIM DIRECTOR</span>
+        {/* Header Header with Language Switcher */}
+        <div className="flex items-center justify-between mb-6 pb-4 border-b border-neutral-800">
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 bg-orange-500/20 border-2 border-orange-500 flex items-center justify-center text-orange-400 font-bold shadow-inner">
+              <Activity className="w-7 h-7 animate-pulse" />
             </div>
-            <h2 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-white mt-1">
-              {isEn ? 'Select Access Area' : 'Seleziona Area di Accesso'}
-            </h2>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-0.5 bg-red-600 text-white font-mono text-[10px] uppercase font-black tracking-wider">
+                  {isEn ? 'SECURE GATEWAY' : 'ACCESSO PROTETTO'}
+                </span>
+                <span className="text-neutral-400 font-mono text-xs">TRAUMA SIMULATOR</span>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-white mt-1">
+                {isEn ? 'Select Access Area' : 'Seleziona Area di Accesso'}
+              </h2>
+            </div>
           </div>
+
+          {/* Language Switcher Button */}
+          <button
+            type="button"
+            onClick={() => setLanguage(isEn ? 'it' : 'en')}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-neutral-950 hover:bg-neutral-800 text-orange-400 border border-neutral-700 hover:border-orange-500 text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-xs"
+            title={isEn ? 'Passa a Italiano' : 'Switch to English'}
+          >
+            <Globe className="w-4 h-4" />
+            <span>{isEn ? 'IT' : 'EN'}</span>
+          </button>
         </div>
 
         {mode === 'choice' ? (
           <div className="space-y-4">
             <p className="text-sm text-neutral-300">
               {isEn
-                ? 'Welcome to the Advanced Trauma Life Support Simulation Portal. Please choose your access level below:'
-                : 'Benvenuto nel Portale di Simulazione Avanzata Advanced Trauma Life Support. Seleziona l\'area di accesso desiderata:'}
+                ? 'Welcome to the Advanced Trauma Simulation Portal. Please choose your access area below:'
+                : 'Benvenuto nel Portale di Simulazione Avanzata di Trauma. Seleziona l\'area di accesso desiderata:'}
             </p>
 
             <div className="grid grid-cols-1 gap-4 pt-2">
@@ -95,7 +108,7 @@ export const StartupAccessModal: React.FC<StartupAccessModalProps> = ({
                 <ArrowRight className="w-5 h-5 text-neutral-500 group-hover:text-orange-400 group-hover:translate-x-1 transition-all" />
               </button>
 
-              {/* Director Area Button */}
+              {/* Staff / Professionals (Addetti ai Lavori) Area Button */}
               <button
                 type="button"
                 onClick={() => {
@@ -111,7 +124,7 @@ export const StartupAccessModal: React.FC<StartupAccessModalProps> = ({
                   </div>
                   <div>
                     <h3 className="text-base font-black uppercase text-white group-hover:text-red-400 transition-colors">
-                      {isEn ? 'Director Area' : 'Area Direttore'}
+                      {isEn ? 'Staff & Professionals Area' : 'Area Addetti ai Lavori'}
                     </h3>
                     <p className="text-xs text-neutral-400 font-mono">
                       {isEn ? 'Full course control, simulation engine, master registry & broadcast' : 'Controllo totale corso, motore di simulazione, anagrafica e regia'}
@@ -128,8 +141,8 @@ export const StartupAccessModal: React.FC<StartupAccessModalProps> = ({
               <KeyRound className="w-4 h-4 text-orange-400 flex-shrink-0" />
               <span>
                 {isEn
-                  ? 'Enter the official emergency access code to unlock Course Director privileges.'
-                  : 'Inserisci il codice di accesso di emergenza ufficiale per sbloccare i privilegi di Direzione Corso.'}
+                  ? 'Enter the official access code to unlock Staff & Professionals privileges.'
+                  : 'Inserisci il codice di accesso ufficiale per sbloccare i privilegi riservati agli addetti ai lavori.'}
               </span>
             </div>
 
@@ -178,7 +191,7 @@ export const StartupAccessModal: React.FC<StartupAccessModalProps> = ({
                 type="submit"
                 className="px-6 py-2.5 text-xs font-black uppercase tracking-wider bg-red-600 hover:bg-red-500 text-white border-2 border-red-500 hover:border-red-400 cursor-pointer flex items-center gap-2 shadow-md"
               >
-                <span>{isEn ? 'Unlock Director Area' : 'Sblocca Area Direttore'}</span>
+                <span>{isEn ? 'Unlock Staff Area' : 'Sblocca Area Addetti'}</span>
                 <Unlock className="w-4 h-4" />
               </button>
             </div>

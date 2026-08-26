@@ -43,7 +43,7 @@ const CourseMainContent: React.FC = () => {
   const [currentTab, setCurrentTab] = useState<string>('main');
 
   const [isStartupModalOpen, setIsStartupModalOpen] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return false;
+    if (typeof window === 'undefined') return true;
     const params = new URLSearchParams(window.location.search);
     const hasParams =
       params.has('discente') ||
@@ -57,9 +57,7 @@ const CourseMainContent: React.FC = () => {
       params.has('badge') ||
       params.has('role') ||
       params.has('id');
-    if (hasParams) return false;
-    const dismissed = sessionStorage.getItem('trauma_startup_gateway_done');
-    return !dismissed;
+    return !hasParams;
   });
 
   // Check URL parameters for instant unique QR Code direct navigation (?discente=... , ?faculty=... , ?tecnico=... , ?direttore=... , ?ospite=...)
@@ -253,12 +251,10 @@ const CourseMainContent: React.FC = () => {
         isOpen={isStartupModalOpen}
         onSelectPublic={() => {
           setUserRole('public');
-          sessionStorage.setItem('trauma_startup_gateway_done', 'true');
           setIsStartupModalOpen(false);
         }}
         onSelectDirector={() => {
           setUserRole('direttore');
-          sessionStorage.setItem('trauma_startup_gateway_done', 'true');
           setIsStartupModalOpen(false);
         }}
       />
