@@ -65,3 +65,19 @@ export function getTeamCodeName(teamOrIdOrName: Team | number | string | undefin
 
   return '';
 }
+
+/**
+ * Recursively removes any undefined values from objects or arrays so Firestore doesn't throw unsupported field value errors.
+ */
+export function cleanUndefined<T>(obj: T): T {
+  if (obj === null || typeof obj !== 'object') return obj;
+  if (Array.isArray(obj)) {
+    return obj.map(cleanUndefined) as unknown as T;
+  }
+  return Object.fromEntries(
+    Object.entries(obj)
+      .filter(([_, v]) => v !== undefined)
+      .map(([k, v]) => [k, cleanUndefined(v)])
+  ) as unknown as T;
+}
+

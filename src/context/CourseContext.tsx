@@ -35,6 +35,7 @@ import {
   INITIAL_TIMELINE_SLOTS,
 } from '../data/initialData';
 import { playBroadcastSound } from '../utils/audio';
+import { cleanUndefined } from '../utils/teamUtils';
 import { Language, translations } from '../i18n/translations';
 import {
   db,
@@ -705,10 +706,10 @@ export const CourseProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       try {
         await setDoc(
           doc(db, 'course_state', 'current_state'),
-          {
+          cleanUndefined({
             ...partialState,
             updatedAt: new Date().toISOString(),
-          },
+          }),
           { merge: true }
         );
       } catch (err) {
