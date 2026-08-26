@@ -35,7 +35,6 @@ EXPOSE 3000
 
 # Set environment to production
 ENV NODE_ENV=production
-ENV PORT=3000
 
 # Start the server
 CMD ["node", "server.js"]
