@@ -321,16 +321,26 @@ export const DiscenteView: React.FC = () => {
               <h2 className="font-black text-base sm:text-lg text-white tracking-tight truncate uppercase mt-0.5 leading-tight">
                 {currentDiscente.name}
               </h2>
+              {/* Prominent Team Display in Header */}
+              <div 
+                className="mt-1.5 mb-1 inline-flex items-center gap-2 px-3 py-1 border-2 shadow-md rounded-sm"
+                style={{ backgroundColor: `${currentTeam.color || '#f97316'}20`, borderColor: currentTeam.color || '#f97316' }}
+              >
+                <span className="w-3 h-3 rounded-full flex-shrink-0 animate-pulse" style={{ backgroundColor: currentTeam.color || '#f97316' }} />
+                <span className="text-xs sm:text-sm font-black uppercase tracking-wider text-white">
+                  {currentTeam.name}
+                </span>
+                <span className="px-1.5 py-0.5 bg-black text-orange-400 text-[10px] font-mono border border-orange-500/40">
+                  {isEn ? 'TEAM' : 'SQUADRA'} #{currentTeam.id} • {isEn ? 'GRP' : 'GRUPPO'} {currentTeam.groupId}
+                </span>
+              </div>
+
               <div className="flex items-center gap-1.5 text-[10px] text-neutral-400 flex-wrap">
                 <span className="font-bold text-orange-400">{currentDiscente.role}</span>
-                <span>•</span>
-                <span className="font-semibold text-neutral-300">
-                  {currentTeam.name} ({isEn ? 'GROUP' : 'GRUPPO'} {currentTeam.groupId})
-                </span>
                 {currentDiscente.organization && (
                   <>
-                    <span className="hidden sm:inline">•</span>
-                    <span className="text-neutral-500 hidden sm:inline truncate max-w-[200px]">
+                    <span>•</span>
+                    <span className="text-neutral-500 truncate max-w-[200px]">
                       {currentDiscente.organization}
                     </span>
                   </>
@@ -339,23 +349,13 @@ export const DiscenteView: React.FC = () => {
             </div>
           </div>
 
-          {/* Quick Actions: Language Switcher, Team Pill & Profile Switcher */}
-          <div className="flex items-center gap-2 w-full md:w-auto justify-between md:justify-end border-t md:border-t-0 pt-2 md:pt-0 border-neutral-800 flex-wrap">
-            <LanguageSwitcher variant="badge" />
-
-            <div className="flex items-center gap-1 px-2.5 py-1 bg-neutral-900 border border-neutral-700 text-xs font-mono">
-              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: currentTeam.color || '#f97316' }} />
-              <span className="font-black text-white">{isEn ? 'TEAM' : 'SQ.'} #{currentTeam.id}</span>
-              <span className="text-neutral-400 text-[11px]">GRP {currentTeam.groupId}</span>
+          {/* Team Pill & Action */}
+          <div className="flex items-center gap-2 w-full md:w-auto justify-end border-t md:border-t-0 pt-2 md:pt-0 border-neutral-800">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-neutral-900 border-2 border-orange-500/70 text-xs font-mono shadow-md">
+              <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: currentTeam.color || '#f97316' }} />
+              <span className="font-black text-white">{isEn ? 'TEAM' : 'SQUADRA'} #{currentTeam.id}</span>
+              <span className="text-orange-400 font-bold text-xs">({isEn ? 'GRP' : 'GR'} {currentTeam.groupId})</span>
             </div>
-
-            <button
-              onClick={() => setIsSwitcherOpen(true)}
-              className="min-h-[36px] flex items-center gap-1 px-3 py-1.5 bg-neutral-900 hover:bg-neutral-800 text-neutral-200 border border-neutral-700 hover:border-orange-500 text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer shadow-xs"
-            >
-              <UserCheck className="w-3.5 h-3.5 text-orange-400" />
-              <span>{isEn ? 'CHANGE PROFILE' : 'CAMBIA PROFILO'}</span>
-            </button>
           </div>
         </div>
       </div>

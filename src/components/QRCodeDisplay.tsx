@@ -7,26 +7,42 @@ import { translateRoleOrSpecialty } from '../i18n/medicalTerms';
 
 interface QRCodeDisplayProps {
   discente?: Discente;
+  faculty?: Faculty;
+  tecnico?: any;
+  technician?: any;
+  direttore?: any;
+  director?: any;
+  ospite?: any;
+  guest?: any;
+  role?: 'discente' | 'faculty' | 'tecnico' | 'direttore' | 'ospite';
+  personId?: string;
   value?: string;
   title?: string;
   subtitle?: string;
   badgeCode?: string;
   nationality?: string;
   team?: Team;
-  faculty?: Faculty;
   size?: number;
   showCard?: boolean;
 }
 
 export const QRCodeDisplay: React.FC<QRCodeDisplayProps> = ({
   discente,
+  faculty,
+  tecnico,
+  technician,
+  direttore,
+  director,
+  ospite,
+  guest,
+  role,
+  personId,
   value,
   title,
   subtitle,
   badgeCode,
   nationality,
   team,
-  faculty,
   size = 200,
   showCard = false,
 }) => {
@@ -36,13 +52,27 @@ export const QRCodeDisplay: React.FC<QRCodeDisplayProps> = ({
   const [dataUrl, setDataUrl] = useState<string>('');
   const [copied, setCopied] = useState(false);
 
-  // Compute effective access URL safely
+  const origin = typeof window !== 'undefined' ? `${window.location.origin}${window.location.pathname}` : 'https://trauma-sim.app';
+
+  const resolvedTecnico = tecnico || technician;
+  const resolvedDirettore = direttore || director;
+  const resolvedOspite = ospite || guest;
+
+  // Compute unique effective access URL safely for every personalized view / QR code
   const accessUrl = value
     ? value
     : discente
-    ? typeof window !== 'undefined'
-      ? `${window.location.origin}${window.location.pathname}?discente=${discente.id}&badge=${discente.badgeCode || discente.id}`
-      : `https://trauma-sim.app/?discente=${discente.id}`
+    ? `${origin}?discente=${discente.id}&badge=${discente.badgeCode || discente.id}`
+    : faculty
+    ? `${origin}?faculty=${faculty.id}&badge=${faculty.badgeCode || faculty.id}`
+    : resolvedTecnico
+    ? `${origin}?tecnico=${resolvedTecnico.id}&badge=${resolvedTecnico.badgeCode || resolvedTecnico.id}`
+    : resolvedDirettore
+    ? `${origin}?direttore=${resolvedDirettore.id}&badge=${resolvedDirettore.badgeCode || resolvedDirettore.id}`
+    : resolvedOspite
+    ? `${origin}?ospite=${resolvedOspite.id}&badge=${resolvedOspite.badgeCode || resolvedOspite.id}`
+    : role && personId
+    ? `${origin}?role=${role}&id=${personId}`
     : typeof window !== 'undefined'
     ? window.location.href
     : 'https://trauma-sim.app';

@@ -249,6 +249,10 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab }) => 
                 </button>
               </div>
 
+              {/* Conditional Controls for Staff / Directors / Tech / Faculty (Hidden for Public & Discente) */}
+              {userRole !== 'public' && userRole !== 'discente' && (
+                <div className="flex items-center gap-2.5 sm:gap-3.5 flex-shrink-0">
+
               {/* BLOCK 3: Timer & Live Phase Controller */}
               <div className="flex items-center gap-2 px-2.5 py-1 bg-slate-900/90 border border-slate-700 shadow-inner rounded flex-shrink-0">
                 <div className="flex items-center gap-1 font-mono text-[11px] font-bold text-slate-300">
@@ -434,7 +438,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab }) => 
                       id="quick-role-discente-btn"
                       onClick={() => handleRoleSelection('discente')}
                       className={`flex items-center gap-1 px-2 py-1 text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer rounded flex-shrink-0 ${
-                        userRole === 'discente'
+                        (userRole as string) === 'discente'
                           ? 'bg-red-600 text-white shadow-xs font-black'
                           : 'text-slate-300 hover:text-white hover:bg-slate-800'
                       }`}
@@ -490,7 +494,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab }) => 
                       id="quick-role-public-btn"
                       onClick={() => handleRoleSelection('public')}
                       className={`flex items-center gap-0.5 px-1.5 py-1 text-[10px] font-bold uppercase tracking-wider transition-all cursor-pointer rounded flex-shrink-0 ${
-                        userRole === 'public'
+                        (userRole as string) === 'public'
                           ? 'bg-slate-100 text-black shadow-xs font-black'
                           : 'text-slate-400 hover:text-white hover:bg-slate-800'
                       }`}
@@ -546,9 +550,11 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab }) => 
                 </div>
               )}
 
-            </div>
+                </div>
+              )}
           </div>
         </div>
+      </div>
 
         {/* Tier 2: Views Navigation Bar - Horizontally Scrollable with Tabs */}
         {!isCourseStarted && (userRole === 'discente' || userRole === 'public') ? (

@@ -23,38 +23,125 @@ import { SimulationQuickFloatingBar } from './components/SimulationQuickFloating
 import { Activity, ShieldCheck, HeartPulse } from 'lucide-react';
 
 const CourseMainContent: React.FC = () => {
-  const { userRole, setUserRole, discenti, setSelectedDiscenteId, isCourseStarted, setIsSimulationModalOpen } = useCourse();
+  const {
+    userRole,
+    setUserRole,
+    discenti,
+    faculty,
+    technicians,
+    directors,
+    guests,
+    setSelectedDiscenteId,
+    setSelectedFacultyId,
+    setSelectedTechnicianId,
+    setSelectedDirectorId,
+    setSelectedGuestId,
+    isCourseStarted,
+    setIsSimulationModalOpen,
+  } = useCourse();
   const [currentTab, setCurrentTab] = useState<string>('main');
 
-  // Check URL parameters for instant QR Code direct navigation (?discente=disc-1 or ?badge=DISC-01)
+  // Check URL parameters for instant unique QR Code direct navigation (?discente=... , ?faculty=... , ?tecnico=... , ?direttore=... , ?ospite=...)
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
-      const discenteParam = params.get('discente') || params.get('id');
+      const discenteParam = params.get('discente');
+      const facultyParam = params.get('faculty');
+      const tecnicoParam = params.get('tecnico') || params.get('technician');
+      const direttoreParam = params.get('direttore') || params.get('director');
+      const ospiteParam = params.get('ospite') || params.get('guest');
+      const idParam = params.get('id');
       const badgeParam = params.get('badge') || params.get('qr');
       const roleParam = params.get('role');
 
-      if (discenteParam) {
+      if (discenteParam || (roleParam === 'discente' && idParam)) {
+        const targetId = discenteParam || idParam;
         const found = discenti.find(
-          (d) => d.id === discenteParam || d.badgeCode?.toLowerCase() === discenteParam.toLowerCase()
+          (d) => d.id === targetId || d.badgeCode?.toLowerCase() === targetId?.toLowerCase()
         );
         if (found) {
           setSelectedDiscenteId(found.id);
           setUserRole('discente');
+        }
+      } else if (facultyParam || (roleParam === 'faculty' && idParam)) {
+        const targetId = facultyParam || idParam;
+        const found = faculty.find(
+          (f) => f.id === targetId || f.badgeCode?.toLowerCase() === targetId?.toLowerCase()
+        );
+        if (found) {
+          setSelectedFacultyId(found.id);
+          setUserRole('faculty');
+        }
+      } else if (tecnicoParam || (roleParam === 'tecnico' && idParam)) {
+        const targetId = tecnicoParam || idParam;
+        const found = technicians.find(
+          (t) => t.id === targetId || t.badgeCode?.toLowerCase() === targetId?.toLowerCase()
+        );
+        if (found) {
+          setSelectedTechnicianId(found.id);
+          setUserRole('tecnico');
+        }
+      } else if (direttoreParam || (roleParam === 'direttore' && idParam)) {
+        const targetId = direttoreParam || idParam;
+        const found = directors.find(
+          (d) => d.id === targetId || d.badgeCode?.toLowerCase() === targetId?.toLowerCase()
+        );
+        if (found) {
+          setSelectedDirectorId(found.id);
+          setUserRole('direttore');
+        }
+      } else if (ospiteParam || (roleParam === 'ospite' && idParam)) {
+        const targetId = ospiteParam || idParam;
+        const found = guests.find(
+          (g) => g.id === targetId || g.badgeCode?.toLowerCase() === targetId?.toLowerCase()
+        );
+        if (found) {
+          setSelectedGuestId(found.id);
+          setUserRole('ospite');
         }
       } else if (badgeParam) {
-        const found = discenti.find(
-          (d) => d.badgeCode?.toLowerCase() === badgeParam.toLowerCase()
-        );
-        if (found) {
-          setSelectedDiscenteId(found.id);
+        // Search across all lists by badgeCode
+        const foundDisc = discenti.find((d) => d.badgeCode?.toLowerCase() === badgeParam.toLowerCase());
+        const foundFac = faculty.find((f) => f.badgeCode?.toLowerCase() === badgeParam.toLowerCase());
+        const foundTech = technicians.find((t) => t.badgeCode?.toLowerCase() === badgeParam.toLowerCase());
+        const foundDir = directors.find((d) => d.badgeCode?.toLowerCase() === badgeParam.toLowerCase());
+        const foundGuest = guests.find((g) => g.badgeCode?.toLowerCase() === badgeParam.toLowerCase());
+
+        if (foundDisc) {
+          setSelectedDiscenteId(foundDisc.id);
           setUserRole('discente');
+        } else if (foundFac) {
+          setSelectedFacultyId(foundFac.id);
+          setUserRole('faculty');
+        } else if (foundTech) {
+          setSelectedTechnicianId(foundTech.id);
+          setUserRole('tecnico');
+        } else if (foundDir) {
+          setSelectedDirectorId(foundDir.id);
+          setUserRole('direttore');
+        } else if (foundGuest) {
+          setSelectedGuestId(foundGuest.id);
+          setUserRole('ospite');
         }
-      } else if (roleParam === 'discente') {
-        setUserRole('discente');
+      } else if (roleParam) {
+        if (['discente', 'faculty', 'tecnico', 'direttore', 'ospite', 'public'].includes(roleParam)) {
+          setUserRole(roleParam as any);
+        }
       }
     }
-  }, [discenti, setSelectedDiscenteId, setUserRole]);
+  }, [
+    discenti,
+    faculty,
+    technicians,
+    directors,
+    guests,
+    setSelectedDiscenteId,
+    setSelectedFacultyId,
+    setSelectedTechnicianId,
+    setSelectedDirectorId,
+    setSelectedGuestId,
+    setUserRole,
+  ]);
 
   const renderActiveView = () => {
     // Before official start date/time: ONLY countdown screen for Discenti and Public
